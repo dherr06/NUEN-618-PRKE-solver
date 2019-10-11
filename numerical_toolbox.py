@@ -84,8 +84,8 @@ class G:
             def funcs(T_vec):
                 T_f = T_vec[0]
                 T_c = T_vec[1]
-                fuel_func = T_fuel - T_f + (t/2)*(1/RC.rhocp_fuel(T_f)[0] * (P/constants.fuel_height()/A_fuel - ((T_f - T_cool)/R_th(T_f,T_cool))) + 1/RC.rhocp_fuel(T_f)[0] * (P_g/constants.fuel_height()/A_fuel - ((T_f - T_cool_g)/R_th(T_f,T_cool_g))))
-                coolant_func = T_cool - T_c + (t/2)*((1/RC.rhocp_mod(T_c)[0]/A_flow * A_fuel*((T_fuel - T_c)/R_th(T_fuel,T_c)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(T_c - constants.T_inlet()))) + (1/RC.rhocp_mod(T_c)[0]/A_flow * A_fuel*((T_fuel_g - T_c)/R_th(T_fuel_g,T_c)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(T_c - constants.T_inlet()))))
+                fuel_func = T_fuel - T_f + (t/2)*(1/RC.rhocp_fuel(T_fuel)[0] * (P/constants.fuel_height()/A_fuel - ((T_fuel - T_cool)/R_th(T_fuel,T_cool))) + 1/RC.rhocp_fuel(T_f)[0] * (P_g/constants.fuel_height()/A_fuel - ((T_f - T_cool_g)/R_th(T_f,T_cool_g))))
+                coolant_func = T_cool - T_c + (t/2)*((1/RC.rhocp_mod(T_cool)[0]/A_flow * A_fuel*((T_fuel - T_cool)/R_th(T_fuel,T_cool)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(T_cool - constants.T_inlet()))) + (1/RC.rhocp_mod(T_c)[0]/A_flow * A_fuel*((T_fuel_g - T_c)/R_th(T_fuel_g,T_c)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(T_c - constants.T_inlet()))))
                 return (fuel_func,coolant_func)
             if mode == 'fsolve':
                 T_fuel_new, T_cool_new = fsolve(funcs,np.array([T_fuel,T_cool]))
