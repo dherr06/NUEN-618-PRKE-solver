@@ -27,7 +27,15 @@ class PRKE:
         #solve the linear system
         soln = np.linalg.solve(A,b)
         return soln
-
+    
+    def Newton(x,func,epsilon):
+        '''
+        Performs a non linear solve using a finite difference Jacobian
+        '''
+        J = np.array()
+        R = np.linalg.solve(J,func(x))
+        x_new = x - R
+        
 class G:
     
     def __init__(self,rho_0,t,P,zeta,T_cool,T_fuel,staggered=True):
