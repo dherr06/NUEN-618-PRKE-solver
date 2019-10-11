@@ -28,11 +28,17 @@ class PRKE:
         soln = np.linalg.solve(A,b)
         return soln
     
+class non_linear:
+    
     def Newton(x,func,epsilon):
         '''
         Performs a non linear solve using a finite difference Jacobian
         '''
-        J = np.array()
+        J = np.zeros((func.shape[0],x.shape[0]))
+        for i in range(x.shape[0]):
+            e = np.zeros(x.shape[0])
+            e[i] = 1
+            J[:,i] = (func(x + e*epsilon) - func(x))/epsilon
         R = np.linalg.solve(J,func(x))
         x_new = x - R
         
@@ -79,6 +85,9 @@ class G:
                 fuel_func = T_fuel - T_f + (t/2)*(1/RC.rhocp_fuel(T_f)[0] * (P/constants.fuel_height()/A_fuel - ((T_f - T_cool)/R_th(T_f,T_cool))) + 1/RC.rhocp_fuel(T_f)[0] * (P_g/constants.fuel_height()/A_fuel - ((T_f - T_cool_g)/R_th(T_f,T_cool_g))))
                 coolant_func = T_cool - T_c + (t/2)*((1/RC.rhocp_mod(T_c)[0]/A_flow * A_fuel*((T_fuel - T_c)/R_th(T_fuel,T_c)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(T_c - constants.T_inlet()))) + (1/RC.rhocp_mod(T_c)[0]/A_flow * A_fuel*((T_fuel_g - x)/R_th(T_fuel_g,T_c)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(x - constants.T_inlet()))))
                 return fuel_func,coolant_func
-            T_fuel_new, T_cool_new = fsolve(funcs,(T_fuel,T_cool))
+            if mode == 'fsolve':
+                T_fuel_new, T_cool_new = fsolve(funcs,(T_fuel,T_cool))
+            elif mode == 'newton':
+                T_fuel_new = non_linear.Newton(x,funcs,1e-12)
         #return the end time values
         return P_new, np.array([zeta_new]), T_cool_new, T_fuel_new
