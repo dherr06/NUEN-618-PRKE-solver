@@ -69,9 +69,9 @@ class G:
         if staggered == True:
             P_new,zeta_new = PRKE.crank_nic(P,zeta,rho_0,rho_1,t,constants.eta(),constants.gamma(),constants.beta(),0)
             fuel_func = lambda x: T_fuel - x + (t/2)*(1/RC.rhocp_fuel(x)[0] * (P/constants.fuel_height()/A_fuel - ((x - T_cool)/R_th(x,T_cool))) + 1/RC.rhocp_fuel(x)[0] * (P_new/constants.fuel_height()/A_fuel - ((x - T_cool_g)/R_th(x,T_cool_g))))
-            T_fuel_new = fsolve(fuel_func,T_fuel)
+            T_fuel_new = fsolve(fuel_func,T_fuel_g)
             coolant_func = lambda x: T_cool - x + (t/2)*((1/RC.rhocp_mod(x)[0]/A_flow * A_fuel*((T_fuel - x)/R_th(T_fuel,x)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(x - constants.T_inlet()))) + (1/RC.rhocp_mod(x)[0]/A_flow * A_fuel*((T_fuel_new - x)/R_th(T_fuel_new,x)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(x - constants.T_inlet()))))
-            T_cool_new = fsolve(coolant_func,T_cool)
+            T_cool_new = fsolve(coolant_func,T_cool_g)
         #perform simultaenous solves on all physics
         else:
             P_new,zeta_new = PRKE.crank_nic(P,zeta,rho_0,rho_1,t,constants.eta(),constants.gamma(),constants.beta(),0)
@@ -81,6 +81,6 @@ class G:
                 fuel_func = T_fuel - T_f + (t/2)*(1/RC.rhocp_fuel(T_fuel)[0] * (P/constants.fuel_height()/A_fuel - ((T_fuel - T_cool)/R_th(T_fuel,T_cool))) + 1/RC.rhocp_fuel(T_f)[0] * (P_g/constants.fuel_height()/A_fuel - ((T_f - T_cool_g)/R_th(T_f,T_cool_g))))
                 coolant_func = T_cool - T_c + (t/2)*((1/RC.rhocp_mod(T_cool)[0]/A_flow * A_fuel*((T_fuel - T_cool)/R_th(T_fuel,T_cool)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(T_cool - constants.T_inlet()))) + (1/RC.rhocp_mod(T_c)[0]/A_flow * A_fuel*((T_fuel_g - T_c)/R_th(T_fuel_g,T_c)) - (constants.fluid_axial_velocity()*2/constants.fuel_height()*(T_c - constants.T_inlet()))))
                 return fuel_func,coolant_func
-            T_fuel_new, T_cool_new = fsolve(funcs,(T_fuel,T_cool))
+            T_fuel_new, T_cool_new = fsolve(funcs,(T_fuel_g,T_cool_g))
         #return the end time values
         return P_new, np.array([zeta_new]), T_cool_new, T_fuel_new
