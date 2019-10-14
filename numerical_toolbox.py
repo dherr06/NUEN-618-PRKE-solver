@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.sparse.linalg as spla
 from scipy.optimize import fsolve
 from properties import ragusa_code as RC
 from constants import constants
@@ -29,7 +30,7 @@ class PRKE:
         return soln
 class non_linear:
     
-    def Newton(x,func,epsilon):
+    def Newton(x,func,epsilon,lin_solve='direct'):
         '''
         Performs a non linear solve using a finite difference Jacobian
         '''
@@ -37,9 +38,11 @@ class non_linear:
         for i in range(x.shape[0]):
             e = np.zeros(x.shape[0])
             e[i] = 1
-            J[:,i] = (func(x + e*epsilon) - func(x))/epsilon
-            print(J)
-        R = np.linalg.solve(J,func(x))
+            J[:,i] = (func(x + (e*epsilon)) - func(x))/epsilon
+        if lin_solve == 'direct':
+            R = np.linalg.solve(J,func(x))
+        elif lin_solve == 'gmres':
+            R = spla.gmres(J,func(x))[0]
         x_new = x - R
         return x_new
         
@@ -54,7 +57,7 @@ class G:
         self.zeta = zeta
         self.staggered = staggered
     
-    def solve(self,rho_1,P_g,T_cool_g,T_fuel_g,mode='fsolve'):
+    def solve(self,rho_1,P_g,T_cool_g,T_fuel_g,mode='fsolve',lin_solve='direct'):
         #initialialize constants
         rho_0 = self.rho_0
         t = self.t
@@ -92,6 +95,6 @@ class G:
                 T_fuel_new, T_cool_new = fsolve(funcs,np.array([T_fuel_g,T_cool_g]))
             elif mode =='newton':
                 epsilon = 1e-8
-                T_fuel_new, T_cool_new = non_linear.Newton(np.array([T_fuel_g,T_cool_g]),funcs,epsilon)
+                T_fuel_new, T_cool_new = non_linear.Newton(np.array([T_fuel_g,T_cool_g]),funcs,epsilon,lin_solve)
         #return the end time values
         return P_new, np.array([zeta_new]), T_cool_new, T_fuel_new

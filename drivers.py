@@ -4,7 +4,7 @@ from constants import constants
 
 class drivers:
     
-    def driver(t,staggered=True,it_solve=True,mode='fsolve'):
+    def driver(t,staggered=True,it_solve=True,mode='fsolve',lin_solve='direct'):
         P = constants.P()
         zeta = constants.zeta()
         power_staggered = np.array([P])
@@ -35,7 +35,7 @@ class drivers:
             #do FPI
             for i in range(max_iters):
                 num_its = i
-                P_new, zeta_new, T_cool_new, T_fuel_new = FPI_object.solve(rho_1,P,T_cool,T_fuel,mode=mode)
+                P_new, zeta_new, T_cool_new, T_fuel_new = FPI_object.solve(rho_1,P,T_cool,T_fuel,mode=mode,lin_solve=lin_solve)
                 if np.abs(P - P_new) < 1e-8 and np.abs(T_cool - T_cool_new) < 1e-8 and np.abs(T_fuel - T_fuel_new) < 1e-8 and it_solve == True:
                     break
                 if it_solve == True:
