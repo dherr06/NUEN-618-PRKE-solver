@@ -1,4 +1,4 @@
-# NUEN-618
+# NUEN-618-PRKE simulator
 Multi-physics simulation
 Simple PRKE solver with feedback
 
