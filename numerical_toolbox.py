@@ -92,6 +92,6 @@ class G:
                 T_fuel_new, T_cool_new = fsolve(funcs,np.array([T_fuel_g,T_cool_g]))
             elif mode =='newton':
                 epsilon = 1e-8
-                T_fuel_new, T_cool_new = non_linear.Newton(funcs,np.array([T_fuel_g,T_cool_g]),epsilon)
+                T_fuel_new, T_cool_new = non_linear.Newton(np.array([T_fuel_g,T_cool_g]),funcs,epsilon)
         #return the end time values
         return P_new, np.array([zeta_new]), T_cool_new, T_fuel_new
