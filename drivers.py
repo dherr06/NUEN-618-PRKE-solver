@@ -5,6 +5,9 @@ from constants import constants
 class drivers:
     
     def driver(t,staggered=True,it_solve=True,mode='fsolve',lin_solve='direct'):
+        T_cool_r = np.array([])
+        T_fuel_r = np.array([])
+        zeta_r = np.array([])
         P = constants.P()
         zeta = constants.zeta()
         power_staggered = np.array([P])
@@ -56,9 +59,13 @@ class drivers:
             r = np.append(r,rho_1)
             r_ext = np.append(r_ext,rho_ext)
             zeta = zeta_new
+            zeta_r = np.append(zeta_r,zeta)
             P = P_new
             T_cool = T_cool_new
             T_fuel = T_fuel_new
             staggered_it = np.append(staggered_it,num_its)
             power_staggered = np.append(power_staggered,P_new)
-        return power_staggered, r, r_ext, staggered_it
+            T_cool_r = np.append(T_cool_r,T_cool)
+            T_fuel_r = np.append(T_fuel_r,T_fuel)
+            #if step*t > 0.12: break
+        return power_staggered, r, r_ext, staggered_it, T_cool_r, T_fuel_r, zeta_r
